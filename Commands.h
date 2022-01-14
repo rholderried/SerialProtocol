@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-// #include "Variables.h"
+#include "Variables.h"
 
 typedef enum 
 {
@@ -41,6 +41,9 @@ class SerialCommands
 
     WRITEEEPROM_CB  writeEEPROM = nullptr;
     READEEPROM_CB   readEEPROM = nullptr;
+
+    uint8_t ui8_varStructLength;
+    VAR     *p_varStruct;
     
     SerialCommands(void);
     

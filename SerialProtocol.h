@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "Commands.h"
+#include "Variables.h"
 
 #define TRANSMIT_BUFFER_LENGTH  64
 // #define NUMBER_OF_CONTROL_BYTES 2
@@ -93,11 +94,13 @@ class SerialProtocol
 
     SerialProtocol();
     void setupCallbacks(TX_CB transmit_cb, READEEPROM_CB readEEPROM_cb, WRITEEEPROM_CB writeEEPROM_cb);
+    void setupVariableStructure(VAR *p_varStruct, uint8_t ui8_structLen);
     void statemachine   (void);
     void sendBuffer     (void);
     void receive        (uint8_t data);
 
     private:
+    
     SerialCommands cmdModule = SerialCommands();
     COMMAND commandParser(uint8_t *pui8_buf, uint8_t ui8_stringSize);
     uint8_t responseBuilder(uint8_t *pui8_buf, RESPONSE response);

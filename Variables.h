@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 
-#define VARSTRUCT_LENGTH    7
+//#define VARSTRUCT_LENGTH    7
 
 typedef enum
 {

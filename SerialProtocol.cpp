@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Helpers.h"
+#include "Variables.h"
 
 
 
@@ -117,6 +118,12 @@ void SerialProtocol::setupCallbacks(TX_CB transmit_cb, READEEPROM_CB readEEPROM_
     txCallback              = transmit_cb;
     cmdModule.readEEPROM    = readEEPROM_cb;
     cmdModule.writeEEPROM   = writeEEPROM_cb;
+}
+
+void SerialProtocol::setupVariableStructure(VAR *p_varStruct, uint8_t ui8_structLen)
+{
+    cmdModule.p_varStruct = p_varStruct;
+    cmdModule.ui8_varStructLength = ui8_structLen;
 }
 
 /*******************************************************************************************
