@@ -1,3 +1,12 @@
+/**************************************************************************//**
+ * \file Helpers.cpp
+ * \author Roman Holderried
+ *
+ * \brief Definitions of the Helpers modules.
+ *
+ * <b> History </b>
+ * 	- 2022-01-17 - File creation
+ *****************************************************************************/
 #include <stdint.h>
 #include "Helpers.h"
 

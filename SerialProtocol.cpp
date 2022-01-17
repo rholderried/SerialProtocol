@@ -1,3 +1,13 @@
+/**************************************************************************//**
+ * \file SerialProtocol.cpp
+ * \author Roman Holderried
+ *
+ * \brief Definitions for the SerialProtocol module.
+ *
+ * <b> History </b>
+ * 	- 2022-01-13 - File creation
+ *****************************************************************************/
+
 #include "SerialProtocol.h"
 #include <stdint.h>
 #include "Commands.h"
@@ -5,104 +15,12 @@
 #include <stdlib.h>
 #include "Helpers.h"
 #include "Variables.h"
+#include "Buffer.h"
 
 
-
-
-/** \brief Buffer constructor
- *
- * @param size  Size of the externally provided buffer
- * @param *buf  Pointer to the first byte of the buffer
- */
-Buffer::Buffer(uint8_t ui8_size, uint8_t *pui8_buf)
-{
-    pui8_bufPtr     = pui8_buf;
-    i16_bufIdx      = -1;
-    ui8_bufLen      = ui8_size;
-    ui8_bufSpace    = ui8_size;
-    b_ovfl          = false;
-}
-
-/** \brief Puts one byte into the buffer
- *
- * @param data Data byte
- */
-void Buffer::putElem(uint8_t ui8_data)
-{
-    // Put the data into the buffer only when it is not going to be overflowed
-    if (ui8_bufSpace > 0)
-    {
-        ui8_bufSpace--;
-        i16_bufIdx++;
-        pui8_bufPtr[i16_bufIdx] = ui8_data;
-    }
-    else
-        b_ovfl = true;
-}
-
-/** \brief Buffer read operation
- *
- * This routine receives the address of a pointer variable, which gets moved
- * to the start of the buffer.
- * 
- * @param   **targetPtr Pointer address.
- * @returns Size of the stored data in bytes.
- */
-uint8_t Buffer::readBuf(uint8_t **pui8_target)
-{
-    uint8_t size = i16_bufIdx + 1;
-
-    *pui8_target = pui8_bufPtr;
-
-    //flushBuf();
-
-    return size;
-}
-
-void Buffer::flushBuf (void)
-{
-    i16_bufIdx      = -1;
-    ui8_bufSpace    = ui8_bufLen;
-    b_ovfl          = false;
-} 
-
-bool Buffer::getNextFreeBufSpace(uint8_t **pui8_target)
-{
-    bool success = false;
-
-    if (ui8_bufSpace > 0)
-    {
-        *pui8_target = &pui8_bufPtr[i16_bufIdx + 1];
-        success = true;
-    }
-
-    return success;
-}
-
-bool Buffer::increaseBufIdx(uint8_t ui8_size)
-{
-    bool success = false;
-
-    if ((i16_bufIdx + ui8_size) < ui8_bufLen)
-    {
-        i16_bufIdx      += ui8_size;
-        ui8_bufSpace    -= ui8_size;
-        success         = true;
-    }
-
-    return success;
-
-}
-
-int16_t Buffer::getActualIdx(void)
-{
-    return i16_bufIdx;
-}
-
-/** \brief SerialProtocol c'tor
- *
- * @param transmitCallback  Callback for transmitting data
- */
+/******************************************************************************
+ * Class method definitions
+ *****************************************************************************/
 SerialProtocol::SerialProtocol()
 {
     control.e_state = PROTOCOL_STATE_DEFAULT;
@@ -113,6 +31,7 @@ SerialProtocol::SerialProtocol()
     #endif
 }
 
+//=============================================================================
 void SerialProtocol::setupCallbacks(TX_CB transmit_cb, READEEPROM_CB readEEPROM_cb, WRITEEEPROM_CB writeEEPROM_cb)
 {
     txCallback              = transmit_cb;
@@ -120,24 +39,14 @@ void SerialProtocol::setupCallbacks(TX_CB transmit_cb, READEEPROM_CB readEEPROM_
     cmdModule.writeEEPROM   = writeEEPROM_cb;
 }
 
+//=============================================================================
 void SerialProtocol::setupVariableStructure(VAR *p_varStruct, uint8_t ui8_structLen)
 {
     cmdModule.p_varStruct = p_varStruct;
     cmdModule.ui8_varStructLength = ui8_structLen;
 }
 
-/*******************************************************************************************
- * SerialProtocol member definitions
-*******************************************************************************************/
-// SerialProtocol::cmdModule = SerialCommands();
-
-/** \brief Receive callback routine
- *
- * Every incoming data bytes shall be passed to this function, which
- * will adjust the protocol state machine accordingly.
- * 
- * @param data  Incoming data byte
- */
+//=============================================================================
 void SerialProtocol::receive(uint8_t ui8_data)
 {
     
@@ -208,7 +117,7 @@ void SerialProtocol::receive(uint8_t ui8_data)
     #endif
 }
 
-
+//=============================================================================
 void SerialProtocol::statemachine(void)
 {
     
@@ -278,7 +187,7 @@ void SerialProtocol::statemachine(void)
     }
 }
 
-
+//=============================================================================
 COMMAND SerialProtocol::commandParser(uint8_t* pui8_buf, uint8_t ui8_stringSize)
 {
     uint8_t i = 0;
@@ -348,6 +257,7 @@ COMMAND SerialProtocol::commandParser(uint8_t* pui8_buf, uint8_t ui8_stringSize)
     terminate: return cmd;
 }
 
+//=============================================================================
 uint8_t SerialProtocol::responseBuilder(uint8_t *pui8_buf, RESPONSE response)
 {
     uint8_t ui8_size    = 0;

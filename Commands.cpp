@@ -1,9 +1,22 @@
+/**************************************************************************//**
+ * \file Commands.cpp
+ * \author Roman Holderried
+ *
+ * \brief Definitions for the SerialCommands module.
+ *
+ * <b> History </b>
+ * 	- 2022-01-13 - File creation
+ *****************************************************************************/
 #include <stdint.h>
 #include "Commands.h"
 #include "Variables.h"
 
+/******************************************************************************
+ * Class method definitions
+ *****************************************************************************/
 SerialCommands::SerialCommands(void){}
 
+//=============================================================================
 RESPONSE SerialCommands::executeCmd(COMMAND cmd)
 {
     RESPONSE rsp = RESPONSE_DEFAULT;
@@ -71,6 +84,7 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
     terminate: return rsp;
 }
 
+//=============================================================================
 bool SerialCommands::readValFromVarStruct(int16_t i16_varNum, float *pf_val)
 {
     int16_t i16_varIdx = i16_varNum - 1;
@@ -110,6 +124,7 @@ bool SerialCommands::readValFromVarStruct(int16_t i16_varNum, float *pf_val)
     return b_success;
 }
 
+//=============================================================================
 bool SerialCommands::writeValToVarStruct(int16_t i16_varNum, float f_val)
 {
     int16_t i16_varIdx = i16_varNum - 1;
