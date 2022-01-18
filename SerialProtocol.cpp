@@ -42,8 +42,9 @@ void SerialProtocol::setupCallbacks(TX_CB transmit_cb, READEEPROM_CB readEEPROM_
 //=============================================================================
 void SerialProtocol::setupVariableStructure(VAR *p_varStruct, uint8_t ui8_structLen)
 {
-    cmdModule.p_varStruct = p_varStruct;
-    cmdModule.ui8_varStructLength = ui8_structLen;
+    cmdModule.varAccess.p_varStruct = p_varStruct;
+    cmdModule.varAccess.ui8_varStructLength = ui8_structLen;
+    cmdModule.varAccess.initVarstruct();
 }
 
 //=============================================================================

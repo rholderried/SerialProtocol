@@ -32,9 +32,9 @@ typedef enum
 }COMMAND_TYPE;
 
 /** \brief EEPROM write user callback.*/
-typedef bool(*WRITEEEPROM_CB)(int16_t);
+typedef bool(*WRITEEEPROM_CB)(VAR*);
 /** \brief EEPROM read user callback.*/
-typedef bool(*READEEPROM_CB)(int16_t);
+typedef bool(*READEEPROM_CB)(VAR*);
 
 
 /** \brief Command structure declaration.*/
@@ -68,11 +68,10 @@ class SerialCommands
     WRITEEEPROM_CB  writeEEPROM = nullptr;  /*!< Gets called in case of a EEPROM variable has been writen by command.*/
     READEEPROM_CB   readEEPROM = nullptr;   /*!< Gets called in case of a EEPROM variable has been read by command.*/
 
-    uint8_t ui8_varStructLength;    /*!< Remembers the length of the variable structure.*/
-    VAR     *p_varStruct;           /*!< Remembers the address of the variable structure.*/
-
     uint8_t ui8_cmdCBStructLength;  /*!< Remembers the length of the command callback structure.*/
     COMMAND_CB *p_cmdCBStruct;      /*!< Command callback structure.*/
+
+    VarAccess varAccess = VarAccess();
     
     /** \brief SerialCommands c'tor*/
     SerialCommands(void);
@@ -82,23 +81,7 @@ class SerialCommands
      * @param cmd               Holds the command information from the parsed command.
      * @returns Response structure.
      */
-    RESPONSE    executeCmd (COMMAND cmd);
-
-    /** \brief Performs a variable read operation through the variable structure.
-     *
-     * @param i16_varNum    Variable number (deduced from ID number) to access.
-     * @param *pf_val       Address to the variable to which the value gets written.
-     * @returns Success indicator.
-     */
-    bool        readValFromVarStruct(int16_t i16_varNum, float *pf_val);
-
-    /** \brief Performs a variable write operation through the variable structure.
-     *
-     * @param i16_varNum    Variable number (deduced from ID number) to access.
-     * @param f_val         Value to write.
-     * @returns Success indicator.
-     */
-    bool        writeValToVarStruct(int16_t i16_varNum, float f_val);
+    RESPONSE    executeCmd (COMMAND cmd); 
 };
 
 #endif //_COMMANDS_H_
