@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "Variables.h"
+#include "CommandStucture.h"
 
 /******************************************************************************
  * Type definitions
@@ -30,8 +31,11 @@ typedef enum
     eCOMMAND_TYPE_COMMAND   =   2
 }COMMAND_TYPE;
 
+/** \brief EEPROM write user callback.*/
 typedef bool(*WRITEEEPROM_CB)(int16_t);
+/** \brief EEPROM read user callback.*/
 typedef bool(*READEEPROM_CB)(int16_t);
+
 
 /** \brief Command structure declaration.*/
 typedef struct
@@ -66,6 +70,9 @@ class SerialCommands
 
     uint8_t ui8_varStructLength;    /*!< Remembers the length of the variable structure.*/
     VAR     *p_varStruct;           /*!< Remembers the address of the variable structure.*/
+
+    uint8_t ui8_cmdCBStructLength;  /*!< Remembers the length of the command callback structure.*/
+    COMMAND_CB *p_cmdCBStruct;      /*!< Command callback structure.*/
     
     /** \brief SerialCommands c'tor*/
     SerialCommands(void);

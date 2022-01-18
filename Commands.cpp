@@ -76,7 +76,26 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
                 rsp.e_cmdType   = cmd.e_cmdType;
                 rsp.b_valid     = true;
             }
-        // TODO: Settle up the command interface
+        
+        case eCOMMAND_TYPE_COMMAND:
+            {
+                bool cmdSuccess = false;
+
+                // Check if a command structure has been passed
+                if (p_cmdCBStruct != nullptr && cmd.i16_num > 0 && cmd.i16_num <= ui8_cmdCBStructLength)
+                {
+                    // TODO: Support for passing values to the command function
+                    cmdSuccess = p_cmdCBStruct[cmd.i16_num - 1](nullptr,0);
+                }
+
+                // Response is getting sent independently of command success
+                rsp.i16_num = cmd.i16_num;
+                rsp.e_cmdType = cmd.e_cmdType;
+                rsp.f_val = cmdSuccess ? 0 : 1;
+                rsp.b_valid = true;
+                
+            }
+
         default:
             break;
     }

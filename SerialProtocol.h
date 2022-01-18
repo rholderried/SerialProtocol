@@ -22,6 +22,8 @@
 #include <stdbool.h>
 #include "Commands.h"
 #include "Variables.h"
+#include "Buffer.h"
+#include "CommandStucture.h"
 
 /******************************************************************************
  * Defines
@@ -113,6 +115,13 @@ class SerialProtocol
      * @param ui8_structLen     Length of the variable structure.
      */
     void setupVariableStructure(VAR *p_varStruct, uint8_t ui8_structLen);
+
+    /** \brief Store the command structure address and length.
+     *
+     * @param *p_cmdStruct      pointer to the command structure.
+     * @param ui8_structLen     Length of the variable structure.
+     */
+    void setupCommandStructure(COMMAND_CB *p_cmdStruct, uint8_t ui8_structLen);
 
     /** \brief Protocol state machine
      *

@@ -47,6 +47,13 @@ void SerialProtocol::setupVariableStructure(VAR *p_varStruct, uint8_t ui8_struct
 }
 
 //=============================================================================
+void SerialProtocol::setupCommandStructure(COMMAND_CB *p_cmdStruct, uint8_t ui8_structLen)
+{
+    cmdModule.p_cmdCBStruct = p_cmdStruct;
+    cmdModule.ui8_cmdCBStructLength = ui8_structLen;
+}
+
+//=============================================================================
 void SerialProtocol::receive(uint8_t ui8_data)
 {
     
@@ -248,7 +255,7 @@ COMMAND SerialProtocol::commandParser(uint8_t* pui8_buf, uint8_t ui8_stringSize)
 
         // copy the number string into new array
         memcpy(p_valStr, &pui8_buf[i+1], ui8_strLen - 1);
-        // Properly terminate string to use the atoi buildin
+        // Properly terminate string to use the atof buildin
         p_valStr[ui8_strLen - 1] = '\0';
         // Convert
         cmd.f_val = atof(p_valStr);
