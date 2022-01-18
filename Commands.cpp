@@ -70,12 +70,14 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
                     }
                 }
 
+
                 // If everything happens to be allright, create the response
                 rsp.i16_num     = cmd.i16_num;
                 rsp.f_val       = cmd.f_val;
                 rsp.e_cmdType   = cmd.e_cmdType;
                 rsp.b_valid     = true;
             }
+            break;
         
         case eCOMMAND_TYPE_COMMAND:
             {
@@ -95,6 +97,7 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
                 rsp.b_valid = true;
                 
             }
+            break;
 
         default:
             break;
