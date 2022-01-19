@@ -31,11 +31,6 @@ typedef enum
     eCOMMAND_TYPE_COMMAND   =   2
 }COMMAND_TYPE;
 
-/** \brief EEPROM write user callback.*/
-typedef bool(*WRITEEEPROM_CB)(VAR*);
-/** \brief EEPROM read user callback.*/
-typedef bool(*READEEPROM_CB)(VAR*);
-
 
 /** \brief Command structure declaration.*/
 typedef struct
@@ -64,9 +59,6 @@ typedef struct
 class SerialCommands
 {
     public:
-
-    WRITEEEPROM_CB  writeEEPROM = nullptr;  /*!< Gets called in case of a EEPROM variable has been writen by command.*/
-    READEEPROM_CB   readEEPROM = nullptr;   /*!< Gets called in case of a EEPROM variable has been read by command.*/
 
     uint8_t ui8_cmdCBStructLength;  /*!< Remembers the length of the command callback structure.*/
     COMMAND_CB *p_cmdCBStruct;      /*!< Command callback structure.*/

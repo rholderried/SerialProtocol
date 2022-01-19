@@ -21,14 +21,14 @@
 /******************************************************************************
  * defines
  *****************************************************************************/
-#define BYTES_BYTE      1
-#define BYTES_WORD      2
-#define BYTES_LONG      4
+#define EEPROM_BYTE_ADRESSABLE      1
+#define EEPROM_WORD_ADRESSABLE      2
+#define EEPROM_LONG_ADRESSABLE      4
 
-#define EEPROMADDRESSTYPE_DEFAULT    BYTES_BYTE
+#define EEPROM_ADDRESSTYPE_DEFAULT    EEPROM_BYTE_ADRESSABLE
 
-#ifndef EEPROMADDRESSTYPE
-#define EEPROMADDRESSTYPE EEPROMADDRESSTYPE_DEFAULT
+#ifndef EEPROM_ADDRESSTYPE
+#define EEPROM_ADDRESSTYPE EEPROM_ADDRESSTYPE_DEFAULT
 #endif
 
 #define ADDRESS_OFFSET_DEFAULT  0
@@ -74,6 +74,11 @@ typedef struct
     }runtime;
 }VAR;
 
+/** \brief EEPROM write user callback.*/
+typedef bool(*WRITEEEPROM_CB)(uint32_t ui32_val, uint16_t ui16_address);
+/** \brief EEPROM read user callback.*/
+typedef bool(*READEEPROM_CB)(uint32_t *ui32_val, uint16_t ui16_address);
+
 class VarAccess
 {
     public:
@@ -83,6 +88,9 @@ class VarAccess
 
     VarAccess();
     bool initVarstruct();
+
+    WRITEEEPROM_CB  writeEEPROM_cb = nullptr;  /*!< Gets called in case of a EEPROM variable has been writen by command.*/
+    READEEPROM_CB   readEEPROM_cb  = nullptr;   /*!< Gets called in case of a EEPROM variable has been read by command.*/
     
     /** \brief Performs a variable read operation through the variable structure.
      *
@@ -90,7 +98,7 @@ class VarAccess
      * @param *pf_val       Address to the variable to which the value gets written.
      * @returns Success indicator.
      */
-    bool        readValFromVarStruct(int16_t i16_varNum, float *pf_val);
+    bool readValFromVarStruct(int16_t i16_varNum, float *pf_val);
 
     /** \brief Performs a variable write operation through the variable structure.
      *
@@ -98,7 +106,10 @@ class VarAccess
      * @param f_val         Value to write.
      * @returns Success indicator.
      */
-    bool        writeValToVarStruct(int16_t i16_varNum, float f_val);
+    bool writeValToVarStruct(int16_t i16_varNum, float f_val);
+
+    bool readEEPROMValueIntoVarStruct(int16_t i16_varNum);
+    bool writeEEPROMwithValueFromVarStruct(int16_t i16_varNum);
 };
 
 #endif //_VARIABLES_H_

@@ -29,10 +29,10 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
                 float f_val = 0.0;
 
                 // If there is no readEEPROM callback or this is no EEPROM var, simply skip this step
-                if (readEEPROM != nullptr && varAccess.p_varStruct[cmd.i16_num - 1].vartype == eVARTYPE_EEPROM)
-                    // If conditions are met, EEPROM read must be successful.
-                    if (!readEEPROM(&varAccess.p_varStruct[cmd.i16_num - 1]))
-                        goto terminate;
+                // if (readEEPROM != nullptr && varAccess.p_varStruct[cmd.i16_num - 1].vartype == eVARTYPE_EEPROM)
+                //     // If conditions are met, EEPROM read must be successful.
+                //     if (!readEEPROM(&varAccess.p_varStruct[cmd.i16_num - 1]))
+                //         goto terminate;
 
                 if (!varAccess.readValFromVarStruct(cmd.i16_num, &f_val))
                     goto terminate;
@@ -59,16 +59,16 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
                     goto terminate;
 
                 // If the varStruct write operation was successful, trigger an EEPROM write (if callback present and variable is of type eVARTYPE_EEPROM)
-                if (writeEEPROM != nullptr && varAccess.p_varStruct[cmd.i16_num - 1].vartype == eVARTYPE_EEPROM)
-                {
-                    // If conditions are met, write must be successful.
-                    if (!writeEEPROM(&varAccess.p_varStruct[cmd.i16_num - 1]))
-                    {
-                        // If the EEPROM write was not successful, write back the old value to the var struct to keep it in sync with the EEPROM.
-                        varAccess.writeValToVarStruct(cmd.i16_num, f_formerVal);
-                        goto terminate;
-                    }
-                }
+                // if (varAccess.writeEEPROM != nullptr && varAccess.p_varStruct[cmd.i16_num - 1].vartype == eVARTYPE_EEPROM)
+                // {
+                //     // If conditions are met, write must be successful.
+                //     if (!writeEEPROM(&varAccess.p_varStruct[cmd.i16_num - 1]))
+                //     {
+                //         // If the EEPROM write was not successful, write back the old value to the var struct to keep it in sync with the EEPROM.
+                //         varAccess.writeValToVarStruct(cmd.i16_num, f_formerVal);
+                //         goto terminate;
+                //     }
+                // }
 
                 varAccess.readValFromVarStruct(cmd.i16_num, &newVal);
 
