@@ -47,7 +47,7 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
 
         case eCOMMAND_TYPE_SETVAR:
             {
-                float f_formerVal = 0.0;
+                float f_formerVal, newVal = 0.0;
                 bool writeSuccessful = false;
                 bool readSuccessful = readValFromVarStruct(cmd.i16_num, &f_formerVal);
 
@@ -70,10 +70,11 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
                     }
                 }
 
+                readValFromVarStruct(cmd.i16_num, &newVal);
 
                 // If everything happens to be allright, create the response
                 rsp.i16_num     = cmd.i16_num;
-                rsp.f_val       = cmd.f_val;
+                rsp.f_val       = newVal;
                 rsp.e_cmdType   = cmd.e_cmdType;
                 rsp.b_valid     = true;
             }
