@@ -14,15 +14,19 @@ bool VarAccess::initVarstruct()
 
     for (uint8_t i = 0; i < ui8_varStructLength; i++)
     {
-        if (p_varStruct[i].vartype = eVARTYPE_EEPROM)
+        if (p_varStruct[i].vartype == eVARTYPE_EEPROM)
         {
-            p_varStruct[i].runtime.ui8_byteLength = ui8_byteLength[p_varStruct->datatype];
+            p_varStruct[i].runtime.ui8_byteLength = ui8_byteLength[p_varStruct[i].datatype];
             p_varStruct[i].runtime.ui16_eeAddress = ui16_currentEEVarAddress;
+
+            readEEPROMValueIntoVarStruct(i + 1);
 
             ui8_incrementor = p_varStruct[i].runtime.ui8_byteLength / EEPROM_ADDRESSTYPE;
             ui16_currentEEVarAddress += ui8_incrementor > 0 ? ui8_incrementor : 1;
         }
     }
+
+    return true;
 }
 
 //=============================================================================
@@ -124,17 +128,17 @@ bool VarAccess::readEEPROMValueIntoVarStruct(int16_t i16_varNum)
 
     u_tmp.ui32_val = 0;
 
-    if (p_varStruct[i16_varNum].runtime.ui8_byteLength > 0 && p_varStruct[i16_varNum].vartype == eVARTYPE_EEPROM)
+    if (p_varStruct[i16_varNum - 1].runtime.ui8_byteLength > 0 && p_varStruct[i16_varNum - 1].vartype == eVARTYPE_EEPROM && readEEPROM_cb != nullptr)
     {
         // Determine how many EEPROM reads have to be accomplished
-        ui8_numberOfIncs = p_varStruct[i16_varNum].runtime.ui8_byteLength/EEPROM_ADDRESSTYPE;
+        ui8_numberOfIncs = p_varStruct[i16_varNum - 1].runtime.ui8_byteLength/EEPROM_ADDRESSTYPE;
         ui8_numberOfIncs = ui8_numberOfIncs > 0 ? ui8_numberOfIncs : 1;
 
         successIndicator = true;
 
         for (uint8_t i = 0; i < ui8_numberOfIncs; i++)
         {
-            successIndicator &= readEEPROM_cb(&ui32_tmp, p_varStruct[i16_varNum].runtime.ui16_eeAddress + i);
+            successIndicator &= readEEPROM_cb(&ui32_tmp, p_varStruct[i16_varNum - 1].runtime.ui16_eeAddress + i);
 
             if (!successIndicator)
                 goto terminate;
@@ -145,7 +149,7 @@ bool VarAccess::readEEPROMValueIntoVarStruct(int16_t i16_varNum)
         }
 
         // Write the data structure with the read value
-        switch(p_varStruct[i16_varNum].datatype)
+        switch(p_varStruct[i16_varNum - 1].datatype)
         {
             case eDTYPE_UINT8:
                 *reinterpret_cast<uint8_t*>(p_varStruct[i16_varNum - 1].val) = u_tmp.ui8_val;
@@ -178,7 +182,7 @@ bool VarAccess::readEEPROMValueIntoVarStruct(int16_t i16_varNum)
 bool VarAccess::writeEEPROMwithValueFromVarStruct(int16_t i16_varNum)
 {
     bool        successIndicator = false;
-    uint32_t    ui32_mask, ui32_tmp = 0;
+    uint32_t    ui32_mask = 0, ui32_tmp = 0;
     uint8_t     ui8_numberOfIncs = 0;
 
     union {
@@ -193,10 +197,10 @@ bool VarAccess::writeEEPROMwithValueFromVarStruct(int16_t i16_varNum)
     
     u_tmp.ui32_val = 0;
 
-    if (p_varStruct[i16_varNum].runtime.ui8_byteLength > 0 && p_varStruct[i16_varNum].vartype == eVARTYPE_EEPROM)
+    if (p_varStruct[i16_varNum - 1].runtime.ui8_byteLength > 0 && p_varStruct[i16_varNum - 1].vartype == eVARTYPE_EEPROM && writeEEPROM_cb != nullptr)
     {
         // Read data from the data structure
-        switch(p_varStruct[i16_varNum].datatype)
+        switch(p_varStruct[i16_varNum - 1].datatype)
         {
             case eDTYPE_UINT8:
                 u_tmp.ui8_val = *reinterpret_cast<uint8_t*>(p_varStruct[i16_varNum - 1].val);
@@ -222,7 +226,7 @@ bool VarAccess::writeEEPROMwithValueFromVarStruct(int16_t i16_varNum)
         }
 
         // Determine how many EEPROM reads have to be accomplished
-        ui8_numberOfIncs = p_varStruct[i16_varNum].runtime.ui8_byteLength/EEPROM_ADDRESSTYPE;
+        ui8_numberOfIncs = p_varStruct[i16_varNum - 1].runtime.ui8_byteLength/EEPROM_ADDRESSTYPE;
         ui8_numberOfIncs = ui8_numberOfIncs > 0 ? ui8_numberOfIncs : 1;
 
         // Generate the bit mask
@@ -239,7 +243,7 @@ bool VarAccess::writeEEPROMwithValueFromVarStruct(int16_t i16_varNum)
             ui32_tmp = u_tmp.ui32_val >> (i - 1) * EEPROM_ADDRESSTYPE * 8;
             ui32_tmp &= ui32_mask;
 
-            successIndicator &= writeEEPROM_cb(ui32_tmp, p_varStruct[i16_varNum].runtime.ui16_eeAddress + (i - 1));
+            successIndicator &= writeEEPROM_cb(ui32_tmp, p_varStruct[i16_varNum - 1].runtime.ui16_eeAddress + (i - 1));
 
             if (!successIndicator)
                 break;

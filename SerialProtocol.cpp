@@ -34,9 +34,9 @@ SerialProtocol::SerialProtocol()
 //=============================================================================
 void SerialProtocol::setupCallbacks(TX_CB transmit_cb, READEEPROM_CB readEEPROM_cb, WRITEEEPROM_CB writeEEPROM_cb)
 {
-    txCallback              = transmit_cb;
-    cmdModule.readEEPROM    = readEEPROM_cb;
-    cmdModule.writeEEPROM   = writeEEPROM_cb;
+    txCallback                              = transmit_cb;
+    cmdModule.varAccess.readEEPROM_cb       = readEEPROM_cb;
+    cmdModule.varAccess.writeEEPROM_cb      = writeEEPROM_cb;
 }
 
 //=============================================================================

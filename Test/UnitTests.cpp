@@ -3,10 +3,12 @@
 #include <cstdbool>
 #include "SerialProtocol.h"
 #include "Helpers.h"
+#include "Variables.h"
 
 using namespace std;
 
-//float testVar = 2.32;
+extern VAR varStruct[];
+uint8_t EESimulationBuffer[20];
 
 void testFtoA (void)
 {
@@ -36,10 +38,20 @@ void testFtoA (void)
 
 }
 
-// void testProtocol (void)
-// {
+bool testWriteEE (uint32_t ui32_val, uint16_t ui16_address)
+{
+    uint8_t val = ui32_val & 0xFF;
+    EESimulationBuffer[ui16_address] = val;
+    return true;
+}
 
-// }
+bool testReadEE (uint32_t *ui32_val, uint16_t ui16_address)
+{
+    uint8_t val = EESimulationBuffer[ui16_address];
+    *ui32_val = val;
+    return true;
+}
+
 
 bool testTxCb(uint8_t* p_buf, uint8_t size)
 {
@@ -53,41 +65,32 @@ int main (void)
 {
     float testvar = -0.567;
     SerialProtocol prot = SerialProtocol();
-    prot.setupCallbacks(testTxCb, nullptr, nullptr);
+    prot.setupCallbacks(testTxCb, testReadEE, testWriteEE);
+    prot.setupVariableStructure(varStruct,5);
 
+    // Simulate a write to the EEPROM
     prot.receive(2);
-    prot.receive('7');
-    prot.receive('?');
-    prot.receive(3);
-
-    prot.statemachine();
-    prot.statemachine();
-    prot.statemachine();
-
-    prot.receive(2);
-    prot.receive('7');
+    prot.receive('4');
     prot.receive('!');
+    prot.receive('3');
+    prot.receive('6');
     prot.receive('1');
-    prot.receive('.');
-    prot.receive('5');
+    prot.receive('4');
     prot.receive(3);
 
-
     prot.statemachine();
     prot.statemachine();
     prot.statemachine();
 
+    // Simulate a read from the EEPROM
     prot.receive(2);
-    prot.receive('7');
+    prot.receive('4');
     prot.receive('?');
     prot.receive(3);
 
     prot.statemachine();
     prot.statemachine();
     prot.statemachine();
-
-
-    //testFtoA();
 
 
 
