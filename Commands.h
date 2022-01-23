@@ -63,7 +63,7 @@ class SerialCommands
     uint8_t ui8_cmdCBStructLength;  /*!< Remembers the length of the command callback structure.*/
     COMMAND_CB *p_cmdCBStruct;      /*!< Command callback structure.*/
 
-    VarAccess varAccess = VarAccess();
+    VarAccess varAccess = VarAccess(); /*!< Variable structure access methods.*/
     
     /** \brief SerialCommands c'tor*/
     SerialCommands(void);

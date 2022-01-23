@@ -63,14 +63,14 @@ typedef enum
 /** \brief Variable struct member declaration.*/
 typedef struct
 {
-    void    *val;
-    TYPE    vartype;
-    DTYPE   datatype;
+    void    *val;       /*!< Pointer to the RAM variable the structure item links to.*/
+    TYPE    vartype;    /*!< Storage type of the variable (RAM or EEPROM).*/
+    DTYPE   datatype;   /*!< Datatype of the linked variable.*/
 
     struct
     {
-        uint16_t    ui16_eeAddress;
-        uint8_t     ui8_byteLength;
+        uint16_t    ui16_eeAddress; /*!< EEPROM address of the variable value.*/
+        uint8_t     ui8_byteLength; /*!< byte length of the variable depending on data type.*/
     }runtime;
 }VAR;
 
@@ -86,7 +86,16 @@ class VarAccess
     uint8_t ui8_varStructLength;    /*!< Remembers the length of the variable structure.*/
     VAR     *p_varStruct;           /*!< Remembers the address of the variable structure.*/
 
+    /** \brief constructor */
     VarAccess();
+
+    /** \brief Initializes the variable structure.
+     * 
+     * This function sets up the "partition table" for EEPROM accesses and reads writes the
+     * values currently stored in the EEPROM to the variable structure.
+     *
+     * @returns Success indicator.
+     */
     bool initVarstruct();
 
     WRITEEEPROM_CB  writeEEPROM_cb = nullptr;  /*!< Gets called in case of a EEPROM variable has been writen by command.*/
@@ -108,7 +117,18 @@ class VarAccess
      */
     bool writeValToVarStruct(int16_t i16_varNum, float f_val);
 
+    /** \brief Reads a value from the EEPROM into the Variable structure.
+     *
+     * @param i16_varNum    Variable structure number.
+     * @returns Success indicator.
+     */
     bool readEEPROMValueIntoVarStruct(int16_t i16_varNum);
+
+    /** \brief Writes the EEPROM by the value read out from the variable structure.
+     *
+     * @param i16_varNum    Variable structure number.
+     * @returns Success indicator.
+     */
     bool writeEEPROMwithValueFromVarStruct(int16_t i16_varNum);
 };
 
