@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "Variables.h"
+#include "CommandStucture.h"
 
 float testVar = 2.356;
 uint8_t ui8_test = 245;
@@ -12,3 +13,11 @@ VAR varStruct[] = { {&testVar, eVARTYPE_RAM, eDTYPE_F32,{0}},           // Numbe
                     {&ui8_test, eVARTYPE_EEPROM, eDTYPE_UINT8,{0}},     // Number 3
                     {&ui16_test, eVARTYPE_EEPROM, eDTYPE_UINT16,{0}},     // Number 4
                     {&i32_test, eVARTYPE_EEPROM, eDTYPE_INT32,{0}}};    // Number 5
+
+
+bool testCmd (float* pf_valArray, uint8_t ui8_valArrayLen)
+{
+    return true;
+}
+
+COMMAND_CB cmdStruct = {testCmd};

@@ -8,6 +8,7 @@
 using namespace std;
 
 extern VAR varStruct[];
+extern COMMAND_CB cmdStruct[];
 uint8_t EESimulationBuffer[20];
 
 void testFtoA (void)
@@ -67,30 +68,37 @@ int main (void)
     SerialProtocol prot = SerialProtocol();
     prot.setupCallbacks(testTxCb, testReadEE, testWriteEE);
     prot.setupVariableStructure(varStruct,5);
+    prot.setupCommandStructure(cmdStruct, 1);
 
     // Simulate a write to the EEPROM
     prot.receive(2);
-    prot.receive('4');
+    prot.receive('1');
     prot.receive('!');
     prot.receive('3');
-    prot.receive('6');
+    prot.receive('.');
     prot.receive('1');
     prot.receive('4');
+    prot.receive(',');
+    prot.receive('2');
+    prot.receive(',');
+    prot.receive('-');
+    prot.receive('3');
+    prot.receive('1');
     prot.receive(3);
 
     prot.statemachine();
     prot.statemachine();
     prot.statemachine();
 
-    // Simulate a read from the EEPROM
-    prot.receive(2);
-    prot.receive('4');
-    prot.receive('?');
-    prot.receive(3);
+    // // Simulate a read from the EEPROM
+    // prot.receive(2);
+    // prot.receive('4');
+    // prot.receive('?');
+    // prot.receive(3);
 
-    prot.statemachine();
-    prot.statemachine();
-    prot.statemachine();
+    // prot.statemachine();
+    // prot.statemachine();
+    // prot.statemachine();
 
 
 

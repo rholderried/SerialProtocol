@@ -284,6 +284,9 @@ COMMAND SerialProtocol::commandParser(uint8_t* pui8_buf, uint8_t ui8_stringSize)
 
             if (j == ui8_valStrLen)
                 break;
+            
+            ui8_valueLen = 0;
+            j++;
         }
         cmd.ui8_valArrLen = ui8_numOfVals;
     }
