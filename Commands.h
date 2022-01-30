@@ -19,6 +19,11 @@
 #include "CommandStucture.h"
 
 /******************************************************************************
+ * Defines
+ *****************************************************************************/
+#define MAX_NUM_COMMAND_VALUES 10
+
+/******************************************************************************
  * Type definitions
  *****************************************************************************/
 
@@ -35,12 +40,13 @@ typedef enum
 /** \brief Command structure declaration.*/
 typedef struct
 {
-    int16_t         i16_num;    /*!< ID Number.*/
-    float           f_val;      /*!< Command Value.*/
-    COMMAND_TYPE    e_cmdType;  /*!< Command Type.*/
+    int16_t         i16_num;                               /*!< ID Number.*/
+    uint8_t         ui8_valArrLen;                         /*!< Length of the value Array.*/
+    float           f_valArr[MAX_NUM_COMMAND_VALUES];      /*!< Pointer to the value array.*/
+    COMMAND_TYPE    e_cmdType;                             /*!< Command Type.*/
 }COMMAND;
 
-#define COMMAND_DEFAULT         {0, 0.0, eCOMMAND_TYPE_NONE}
+#define COMMAND_DEFAULT         {0, 0, {0.0}, eCOMMAND_TYPE_NONE}
 
 /** \brief Response structure declaration.*/
 typedef struct

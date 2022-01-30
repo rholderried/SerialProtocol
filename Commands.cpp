@@ -59,7 +59,7 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
                     goto terminate;
 
                 // Read back actual value and write new one (write will only happen if read was successful)
-                if (!varAccess.writeValToVarStruct(cmd.i16_num, cmd.f_val))
+                if (!varAccess.writeValToVarStruct(cmd.i16_num, cmd.f_valArr[0]))
                     goto terminate;
 
                 // If the varStruct write operation was successful, trigger an EEPROM write (if callback present and variable is of type eVARTYPE_EEPROM)
@@ -92,7 +92,7 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
                 if (p_cmdCBStruct != nullptr && cmd.i16_num > 0 && cmd.i16_num <= ui8_cmdCBStructLength)
                 {
                     // TODO: Support for passing values to the command function
-                    cmdSuccess = p_cmdCBStruct[cmd.i16_num - 1](nullptr,0);
+                    cmdSuccess = p_cmdCBStruct[cmd.i16_num - 1](cmd.f_valArr,cmd.ui8_valArrLen);
                 }
 
                 // Response is getting sent independently of command success

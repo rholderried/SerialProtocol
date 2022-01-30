@@ -251,15 +251,41 @@ COMMAND SerialProtocol::commandParser(uint8_t* pui8_buf, uint8_t ui8_stringSize)
    // Only if a parameter has been passed
    if (ui8_stringSize > i + 1)
    {
-        uint8_t ui8_strLen = ui8_stringSize - i;
-        char p_valStr[ui8_strLen] = {0};
+        uint8_t ui8_valStrLen = ui8_stringSize - i;
+        uint8_t j = 1;
+        uint8_t ui8_numOfVals = 0;
+        uint8_t ui8_valueLen = 0;
+        char *p_valStr = nullptr;
 
-        // copy the number string into new array
-        memcpy(p_valStr, &pui8_buf[i+1], ui8_strLen - 1);
-        // Properly terminate string to use the atof buildin
-        p_valStr[ui8_strLen - 1] = '\0';
-        // Convert
-        cmd.f_val = atof(p_valStr);
+        while (ui8_numOfVals <= MAX_NUM_COMMAND_VALUES)
+        {
+            ui8_numOfVals++;
+
+            while (j < ui8_valStrLen)
+            {
+                // Value seperator found
+                if (pui8_buf[i + j] == ',')
+                    break;
+                
+                j++;
+                ui8_valueLen++;
+            }
+
+            p_valStr = new char[ui8_valueLen + 1];
+
+            // copy the number string into new array
+            memcpy(p_valStr, &pui8_buf[i + j - ui8_valueLen], ui8_valueLen);
+
+            p_valStr[ui8_valueLen] = '\0';
+
+            cmd.f_valArr[ui8_numOfVals - 1] = atof(p_valStr);
+
+            delete p_valStr;
+
+            if (j == ui8_valStrLen)
+                break;
+        }
+        cmd.ui8_valArrLen = ui8_numOfVals;
     }
 
     terminate: return cmd;
