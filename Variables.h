@@ -60,6 +60,13 @@ typedef enum
     eDTYPE_F32    = 6
 }DTYPE;
 
+/** \brief EEPROM write user callback.*/
+typedef bool(*WRITEEEPROM_CB)(uint32_t ui32_val, uint16_t ui16_address);
+/** \brief EEPROM read user callback.*/
+typedef bool(*READEEPROM_CB)(uint32_t *ui32_val, uint16_t ui16_address);
+/** \brief Action procedure declaration for a setVar operation.*/
+typedef void(*ACTION_PROCEDURE)(void);
+
 /** \brief Variable struct member declaration.*/
 typedef struct
 {
@@ -72,12 +79,8 @@ typedef struct
         uint16_t    ui16_eeAddress; /*!< EEPROM address of the variable value.*/
         uint8_t     ui8_byteLength; /*!< byte length of the variable depending on data type.*/
     }runtime;
+    ACTION_PROCEDURE ap;
 }VAR;
-
-/** \brief EEPROM write user callback.*/
-typedef bool(*WRITEEEPROM_CB)(uint32_t ui32_val, uint16_t ui16_address);
-/** \brief EEPROM read user callback.*/
-typedef bool(*READEEPROM_CB)(uint32_t *ui32_val, uint16_t ui16_address);
 
 class VarAccess
 {

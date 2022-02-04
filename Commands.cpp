@@ -74,6 +74,10 @@ RESPONSE SerialCommands::executeCmd(COMMAND cmd)
                     }
                 }
 
+                // Everything was successful -> We call the action procedure
+                if (varAccess.p_varStruct[cmd.i16_num - 1].ap != nullptr)
+                    varAccess.p_varStruct[cmd.i16_num - 1].ap();
+
                 varAccess.readValFromVarStruct(cmd.i16_num, &newVal);
 
                 // If everything happens to be allright, create the response
